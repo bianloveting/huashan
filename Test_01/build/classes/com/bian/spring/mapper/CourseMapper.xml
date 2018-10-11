@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bian.spring.mapper.CourseMapper">
+  <resultMap id="BaseResultMap" type="com.bian.spring.entites.Course">
+    <id column="u_id" jdbcType="INTEGER" property="uId" />
+    <result column="c_name" jdbcType="VARCHAR" property="cName" />
+    <result column="c_teacher" jdbcType="VARCHAR" property="cTeacher" />
+    <result column="c_type" jdbcType="VARCHAR" property="cType" />
+    <result column="s_id" jdbcType="INTEGER" property="sId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.bian.spring.entites.Course">
+    <result column="c_img" jdbcType="LONGVARBINARY" property="cImg" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    u_id, c_name, c_teacher, c_type, s_id
+  </sql>
+  <sql id="Blob_Column_List">
+    c_img
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_course
+    where u_id = #{uId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_course
+    where u_id = #{uId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bian.spring.entites.Course">
+    insert into tb_course (u_id, c_name, c_teacher, 
+      c_type, s_id, c_img
+      )
+    values (#{uId,jdbcType=INTEGER}, #{cName,jdbcType=VARCHAR}, #{cTeacher,jdbcType=VARCHAR}, 
+      #{cType,jdbcType=VARCHAR}, #{sId,jdbcType=INTEGER}, #{cImg,jdbcType=LONGVARBINARY}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bian.spring.entites.Course">
+    insert into tb_course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uId != null">
+        u_id,
+      </if>
+      <if test="cName != null">
+        c_name,
+      </if>
+      <if test="cTeacher != null">
+        c_teacher,
+      </if>
+      <if test="cType != null">
+        c_type,
+      </if>
+      <if test="sId != null">
+        s_id,
+      </if>
+      <if test="cImg != null">
+        c_img,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uId != null">
+        #{uId,jdbcType=INTEGER},
+      </if>
+      <if test="cName != null">
+        #{cName,jdbcType=VARCHAR},
+      </if>
+      <if test="cTeacher != null">
+        #{cTeacher,jdbcType=VARCHAR},
+      </if>
+      <if test="cType != null">
+        #{cType,jdbcType=VARCHAR},
+      </if>
+      <if test="sId != null">
+        #{sId,jdbcType=INTEGER},
+      </if>
+      <if test="cImg != null">
+        #{cImg,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bian.spring.entites.Course">
+    update tb_course
+    <set>
+      <if test="cName != null">
+        c_name = #{cName,jdbcType=VARCHAR},
+      </if>
+      <if test="cTeacher != null">
+        c_teacher = #{cTeacher,jdbcType=VARCHAR},
+      </if>
+      <if test="cType != null">
+        c_type = #{cType,jdbcType=VARCHAR},
+      </if>
+      <if test="sId != null">
+        s_id = #{sId,jdbcType=INTEGER},
+      </if>
+      <if test="cImg != null">
+        c_img = #{cImg,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where u_id = #{uId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.bian.spring.entites.Course">
+    update tb_course
+    set c_name = #{cName,jdbcType=VARCHAR},
+      c_teacher = #{cTeacher,jdbcType=VARCHAR},
+      c_type = #{cType,jdbcType=VARCHAR},
+      s_id = #{sId,jdbcType=INTEGER},
+      c_img = #{cImg,jdbcType=LONGVARBINARY}
+    where u_id = #{uId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bian.spring.entites.Course">
+    update tb_course
+    set c_name = #{cName,jdbcType=VARCHAR},
+      c_teacher = #{cTeacher,jdbcType=VARCHAR},
+      c_type = #{cType,jdbcType=VARCHAR},
+      s_id = #{sId,jdbcType=INTEGER}
+    where u_id = #{uId,jdbcType=INTEGER}
+  </update>
+</mapper>

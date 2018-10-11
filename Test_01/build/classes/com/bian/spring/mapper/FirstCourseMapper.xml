@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bian.spring.mapper.FirstCourseMapper">
+  <resultMap id="BaseResultMap" type="com.bian.spring.entites.FirstCourse">
+    <result column="f_name" jdbcType="VARCHAR" property="fName" />
+    <association property="secondCourse" javaType="com.bian.spring.entites.SecondCourse">
+    	  <id column="s_id" jdbcType="INTEGER" property="sId" />
+	      <result column="s_name" jdbcType="VARCHAR" property="sName" />
+	      <result column="f_id" jdbcType="INTEGER" property="fId" />
+	      <association property="thirdCourse" javaType="com.bian.spring.entites.ThirdCourse">
+		      	<id column="t_id" jdbcType="INTEGER" property="tId" />
+			    <result column="t_name" jdbcType="VARCHAR" property="tName" />
+			    <result column="s_id" jdbcType="INTEGER" property="sId" />
+	      </association>
+    </association>
+ </resultMap>
+ 
+  <resultMap id="courseMap" type="com.bian.spring.entites.Course">
+    <id column="c_id" jdbcType="INTEGER" property="cId" />
+    <result column="c_name" jdbcType="VARCHAR" property="cName" />
+    <result column="c_teacher" jdbcType="VARCHAR" property="cTeacher" />
+    <result column="c_img" property="cImg"></result>
+    <result column="c_type" jdbcType="VARCHAR" property="cType" />
+    <result column="s_id" jdbcType="INTEGER" property="sId" />
+  </resultMap>
+  
+  <!-- 根据第二课程id  查询所有的课程 -->
+  <resultMap id="courseSecondAll" type="com.bian.spring.entites.Course">
+    <id column="c_id" jdbcType="INTEGER" property="cId" />
+    <result column="c_name" jdbcType="VARCHAR" property="cName" />
+    <result column="c_teacher" jdbcType="VARCHAR" property="cTeacher" />
+    <result column="c_img" property="cImg"></result>
+    <result column="c_type" jdbcType="VARCHAR" property="cType" />
+    <result column="s_id" jdbcType="INTEGER" property="sId" />
+    <association property="secondCourse" javaType="com.bian.spring.entites.SecondCourse">
+    	  <id column="s_id" jdbcType="INTEGER" property="sId" />
+	      <result column="s_name" jdbcType="VARCHAR" property="sName" />
+	      <result column="f_id" jdbcType="INTEGER" property="fId" />
+	</association>
+  </resultMap>
+  
+  <!-- 封装video+course类型 -->
+   <resultMap id="courseWithVideo" type="com.bian.spring.entites.Course">
+	    <id column="c_id" jdbcType="INTEGER" property="cId" />
+	    <result column="c_name" jdbcType="VARCHAR" property="cName" />
+	    <result column="c_teacher" jdbcType="VARCHAR" property="cTeacher" />
+	    <result column="c_img" property="cImg"></result>
+	    <result column="c_type" jdbcType="VARCHAR" property="cType" />
+	    <result column="s_id" jdbcType="INTEGER" property="sId" />
+	    <result column="c_content" property="cContent"/>
+	    <association property="video" javaType="com.bian.spring.entites.Video">
+		    <id column="c_id" jdbcType="INTEGER" property="cId" />
+		    <result column="v_desc" jdbcType="VARCHAR" property="vDesc" />
+		    <result column="v_id"  property="vId" />
+		    <result column="v_name" property="vName"/>
+	 	</association>
+  </resultMap>  
+    
+ 
+  <sql id="Base_Column_List">
+    f_id, f_name
+  </sql>
+  
+  <select id="selectAllCourse" resultMap="BaseResultMap">
+  		select * from v_lesson group by s_id
+  </select>
+  
+  <insert id="addCourse">
+     insert into tb_course
+     (c_name,c_teacher,c_type,s_id,c_img,c_content) 
+      values
+     (#{cName},#{cTeacher},#{cType},#{sId},#{cImg},#{cContent})
+  </insert>
+  
+  <select id="getCourseAll" resultMap="courseSecondAll">
+  	   	 select * from v_course  where s_id = #{sId}  group by c_id  order by c_id
+  </select>
+  
+  <select id="getCourseByName" resultMap="courseWithVideo">
+  	  select * from v_videoInfo where c_name like #{cName} order by c_id
+  </select>
+  
+  <select id="getCourseBySecondLesson" resultMap="courseWithVideo">
+	 select * from v_videoInfo where s_id = #{sId} order by c_id  
+  </select>
+  
+  <select id="getRandomLesson" resultType="com.bian.spring.entites.Course">
+  		select * from  tb_course order by rand() limit 0,6  
+  </select>
+  
+  <select id="getVideoCourse" resultMap="courseWithVideo">
+  		select * from v_videoInfo   where v_id is  null  order by c_name
+  </select>
+  
+   <select id="getVideoCourse1" resultMap="courseWithVideo">
+  		select * from v_videoInfo   where v_id is  null  order by c_name
+  </select>
+  
+  <insert id="insertVideoId">
+  	  insert into tb_video 
+  	  (c_id,v_desc,v_id,v_name)
+  	  values 
+  	  (#{cId},#{vDesc},#{vId},#{vName}) 
+  </insert>
+  
+  
+  <select id="getCourseByCId" resultMap="courseWithVideo">
+  	 select * from v_videoInfo where c_id = #{id}  order by c_id
+  </select>
+  
+  <!--    public int updateCourseByCid(Integer cId);
+    
+    //根据id vide课程内容
+    public int updateVideoByCid(Integer cId);
+   -->
+   
+   <update id="updateCourseByCid">
+   	   update tb_course 
+   	   <set>
+   	   		<if test="cName != null">
+   	   			c_name=#{cName},
+   	   		</if>
+   	   		<if test="cTeacher != null">
+   	   			 c_teacher=#{cTeacher},
+   	   		</if>
+   	   		<if test="cType != null">
+   	   			c_type=#{cType},
+   	   		</if>
+   	   		<if test="cImg != null">
+   	   			c_img=#{cImg},
+   	   		</if>
+   	   		<if test="sId != null">
+   	   			s_id=#{sId},
+   	   		</if>
+   	   		<if test="cContent">
+   	   		    c_content=#{cContent}
+   	   		</if>
+   	   </set>
+   	   where c_id = #{cId}
+   </update>
+  
+  
+  <update id="updateVideoByCid">
+      update tb_video 
+      <set>
+   	   		<if test="vId!= null">
+   	   			 v_id=#{vId},
+   	   		</if>
+   	   		<if test="vName != null">
+   	   			v_name=#{vName}
+   	   	    </if>
+      </set>
+      where c_id=#{cId}
+  
+  </update>
+  
+  <select id="getVideoInfo" resultMap="courseWithVideo" >
+  		select * from v_videoInfo where c_id = #{cId} 
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_first_course
+    where f_id = #{fId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_first_course
+    where f_id = #{fId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bian.spring.entites.FirstCourse">
+    insert into tb_first_course (f_id, f_name)
+    values (#{fId,jdbcType=INTEGER}, #{fName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bian.spring.entites.FirstCourse">
+    insert into tb_first_course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fId != null">
+        f_id,
+      </if>
+      <if test="fName != null">
+        f_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fId != null">
+        #{fId,jdbcType=INTEGER},
+      </if>
+      <if test="fName != null">
+        #{fName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bian.spring.entites.FirstCourse">
+    update tb_first_course
+    <set>
+      <if test="fName != null">
+        f_name = #{fName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where f_id = #{fId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bian.spring.entites.FirstCourse">
+    update tb_first_course
+    set f_name = #{fName,jdbcType=VARCHAR}
+    where f_id = #{fId,jdbcType=INTEGER}
+  </update>
+</mapper>

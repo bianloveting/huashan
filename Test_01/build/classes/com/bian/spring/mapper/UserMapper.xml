@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bian.spring.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.bian.spring.entites.User">
+    <id column="u_id" jdbcType="INTEGER" property="uId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="pass" jdbcType="VARCHAR" property="pass" />
+    <result column="first_name" jdbcType="VARCHAR" property="firstName" />
+    <result column="mail" jdbcType="VARCHAR" property="mail" />
+    <result column="last_name" jdbcType="VARCHAR" property="lastName" />
+    <result column="privilege" jdbcType="INTEGER" property="privilege" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    u_id, user_name, pass, first_name, mail, last_name, privilege
+  </sql>
+  
+    <!-- -自己的部分  -->
+  
+  <select id="checkUserNameHasExists" resultType="com.bian.spring.entites.User">
+     select * from tb_user where user_name = #{userName}
+  </select>
+  
+  
+  
+  <insert id="insert" parameterType="com.bian.spring.entites.User">
+    insert into tb_user ( user_name, pass, mail,privilege)
+    values ( #{userName,jdbcType=VARCHAR}, #{pass,jdbcType=VARCHAR}, #{mail,jdbcType=VARCHAR},#{privilege} )
+  </insert>
+  
+  
+  <select id="LoginUser" resultType="com.bian.spring.entites.User">
+    select * from tb_user where user_name = #{userName} and pass = #{pass} and privilege = #{privilege}
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_user
+    where u_id = #{uId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_user
+    where u_id = #{uId,jdbcType=INTEGER}
+  </delete>
+
+ 
+  <insert id="insertSelective" parameterType="com.bian.spring.entites.User">
+    insert into tb_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uId != null">
+        u_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="pass != null">
+        pass,
+      </if>
+      <if test="firstName != null">
+        first_name,
+      </if>
+      <if test="mail != null">
+        mail,
+      </if>
+      <if test="lastName != null">
+        last_name,
+      </if>
+      <if test="privilege != null">
+        privilege,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uId != null">
+        #{uId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="pass != null">
+        #{pass,jdbcType=VARCHAR},
+      </if>
+      <if test="firstName != null">
+        #{firstName,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null">
+        #{mail,jdbcType=VARCHAR},
+      </if>
+      <if test="lastName != null">
+        #{lastName,jdbcType=VARCHAR},
+      </if>
+      <if test="privilege != null">
+        #{privilege,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bian.spring.entites.User">
+    update tb_user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="pass != null">
+        pass = #{pass,jdbcType=VARCHAR},
+      </if>
+      <if test="firstName != null">
+        first_name = #{firstName,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null">
+        mail = #{mail,jdbcType=VARCHAR},
+      </if>
+      <if test="lastName != null">
+        last_name = #{lastName,jdbcType=VARCHAR},
+      </if>
+      <if test="privilege != null">
+        privilege = #{privilege,jdbcType=INTEGER},
+      </if>
+    </set>
+    where u_id = #{uId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bian.spring.entites.User">
+    update tb_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      pass = #{pass,jdbcType=VARCHAR},
+      first_name = #{firstName,jdbcType=VARCHAR},
+      mail = #{mail,jdbcType=VARCHAR},
+      last_name = #{lastName,jdbcType=VARCHAR},
+      privilege = #{privilege,jdbcType=INTEGER}
+    where u_id = #{uId,jdbcType=INTEGER}
+  </update>
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</mapper>
